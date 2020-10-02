@@ -2,6 +2,11 @@
 *.bfb
 *.cubepro
 
+# vscode
+.vscode
+
+# Bazel
+bazel-**
 
 # Cargo build files
 **/tests/**/Cargo.lock
