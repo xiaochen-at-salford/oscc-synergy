@@ -8,7 +8,7 @@
 
 #include "oscc.h"
 #include "commander.h"
-#include "../api/include/can_protocols/steering_can_protocol.h"
+#include "can_protocols/steering_can_protocol.h"
 // #include "can_protocols/steering_can_protocol.h"
 
 #define COMMANDER_UPDATE_INTERVAL_MICRO (50000)

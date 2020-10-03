@@ -15,11 +15,11 @@
 #include "joystick.h"
 #include "vehicles.h"
 
-#include "kia_niro.h"
-#include "can_protocols/brake_can_protocol.h"
-#include "can_protocols/steering_can_protocol.h"
-#include "can_protocols/throttle_can_protocol.h"
-#include "can_protocols/fault_can_protocol.h"
+// #include "kia_niro.h"
+// #include "can_protocols/brake_can_protocol.h"
+// #include "can_protocols/steering_can_protocol.h"
+// #include "can_protocols/throttle_can_protocol.h"
+// #include "can_protocols/fault_can_protocol.h"
 
 #include "brake_can_protocol.h"
 #include "steering_can_protocol.h"
@@ -29,10 +29,10 @@
 
 
 
-#include "../api/include/can_protocols/brake_can_protocol.h"
-#include "../api/include/can_protocols/steering_can_protocol.h"
-#include "../api/include/can_protocols/throttle_can_protocol.h"
-#include "../api/include/can_protocols/fault_can_protocol.h"
+#include "can_protocols/brake_can_protocol.h"
+#include "can_protocols/steering_can_protocol.h"
+#include "can_protocols/throttle_can_protocol.h"
+#include "can_protocols/fault_can_protocol.h"
 
 
 #define CONSTRAIN(amt, low, high) ((amt) < (low) ? (low) : ((amt) > (high) ? (high) : (amt)))

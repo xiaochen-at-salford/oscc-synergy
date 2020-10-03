@@ -6,7 +6,7 @@
 .vscode
 
 # Bazel
-bazel-**
+bazel-*
 
 # Cargo build files
 **/tests/**/Cargo.lock
