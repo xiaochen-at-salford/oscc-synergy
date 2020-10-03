@@ -5,6 +5,9 @@
 # vscode
 .vscode
 
+# targets
+bin 
+
 # Bazel
 bazel-*
 
