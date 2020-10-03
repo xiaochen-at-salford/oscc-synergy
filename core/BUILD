@@ -1,4 +1,5 @@
 load("@rules_cc//cc:defs.bzl","cc_library")
+load('//:shared_variables.bzl', "COPTS")
 package(default_visibility = ["//visibility:public"])  
 
 cc_library(
@@ -15,11 +16,9 @@ cc_library(
         "include/vehicles/*.h", 
     ]),
 
-    copts = [
-      "-DKIA_NIRO",
-      "-DVEHICLE=kia_niro",
-      "-Icore/include",
-      "-Icore/include/can_protocols",
-      "-Icore/include/vehicles",
+    copts = COPTS + [
+        "-Icore/include",
+        "-Icore/include/can_protocols",
+        "-Icore/include/vehicles",
     ],
 )

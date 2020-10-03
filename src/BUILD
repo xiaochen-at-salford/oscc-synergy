@@ -1,4 +1,5 @@
 load("@rules_cc//cc:defs.bzl","cc_binary")
+load("//:shared_variables.bzl", "COPTS")
 
 cc_binary(
     name = "oscc_jscmd",
@@ -15,9 +16,7 @@ cc_binary(
         "@sdl2//:lib",
     ],
 
-    copts = [
-        "-DKIA_NIRO",
-        "-DVEHICLE=kia_niro",
+    copts = COPTS + [
         "-Icore/include",
         "-Icore/include/can_protocols",
         "-Icore/include/vehicles",

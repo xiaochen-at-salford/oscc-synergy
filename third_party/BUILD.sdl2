@@ -3,6 +3,10 @@ package(default_visibility = ["//visibility:public"])
 
 cc_library(
    name = "lib",
-   srcs = ["libSDL2.so"],
+   srcs = [
+      "libSDL2.so",
+   ],
+
+
    visibility = ["//visibility:public"],
 )
