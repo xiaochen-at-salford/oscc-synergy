@@ -15,10 +15,9 @@
 #include "vehicles/kia_soul_ev.h"
 #elif defined(KIA_NIRO)
 #include "vehicles/kia_niro.h"
-// #include "kia_niro.h"
 #endif
 
 #define CONSTRAIN(amt, low, high) ((amt) < (low) ? (low) : ((amt) > (high) ? (high) : (amt)))
 
 
-#endif /* _OSCC_VEHICLES_H_ */
+#endif // _OSCC_VEHICLES_H_ 

@@ -1,9 +1,7 @@
 /**
  * @file brake_can_protocol.h
  * @brief Brake CAN Protocol.
- *
  */
-
 
 #ifndef _OSCC_BRAKE_CAN_PROTOCOL_H_
 #define _OSCC_BRAKE_CAN_PROTOCOL_H_
@@ -11,7 +9,6 @@
 
 #include <stdint.h>
 #include "magic.h"
-
 
 /*
  * @brief CAN ID representing the range of brake messages.

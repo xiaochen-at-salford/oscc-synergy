@@ -6,7 +6,7 @@ cc_library(
     name = "oscc_lib",
 
     srcs = [
-        "src/oscc.c",
+        "src/oscc.cc",
         "src/internal/oscc.h",
     ],
 

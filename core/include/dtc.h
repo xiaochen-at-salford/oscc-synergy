@@ -9,15 +9,14 @@
 #define _OSCC_DTC_H_
 
 
-/*
+/**
  * @brief Set a DTC bit in a DTC bitfield.
  *
  */
 #define DTC_SET( bitfield, dtc ) ( (bitfield) |= (1<<(dtc)) )
 
-/*
+/**
  * @brief Clear a DTC bit in a DTC bitfield.
- *
  */
 #define DTC_CLEAR( bitfield, dtc ) ( (bitfield) &= ~(1<<(dtc)) )
 

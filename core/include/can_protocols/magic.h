@@ -4,24 +4,21 @@
  *
  */
 
-
 #ifndef _OSCC_MAGIC_H_
 #define _OSCC_MAGIC_H_
 
 
-/*
+/**
  * @brief First magic byte used in commands and reports to distinguish CAN
  *        frame as coming from OSCC (and not OBD).
- *
  */
-#define OSCC_MAGIC_BYTE_0 ( 0x05 )
+#define OSCC_MAGIC_BYTE_0 0x05 
 
-/*
+/**
  * @brief Second magic byte used in commands and reports to distinguish CAN
  *        frame as coming from OSCC (and not OBD).
- *
  */
-#define OSCC_MAGIC_BYTE_1 ( 0xCC )
+#define OSCC_MAGIC_BYTE_1 0xCC
 
 
-#endif /* _OSCC_MAGIC_H_ */
+#endif // _OSCC_MAGIC_H_ 
