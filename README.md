@@ -1,0 +1,2 @@
+# OSCC-Apollo
+The customised host-side OSCC package rewritten from [PolySync OSCC](https://github.com/PolySync/oscc)
