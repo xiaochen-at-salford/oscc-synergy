@@ -14,6 +14,7 @@
 #define COMMANDER_UPDATE_INTERVAL_MICRO 50000
 #define SLEEP_TICK_INTERVAL_MICRO 1000
 
+int g_channel;
 static int error_thrown = OSCC_OK;
 
 static unsigned long long get_timestamp_micro()
@@ -44,12 +45,13 @@ int main(int argc, char** argv)
   int channel;
   errno = 0;
 
-  if (argc!=2  
-      || (channel=atoi(argv[1]), errno)!=0 )
+  if (argc!=2 || (channel=atoi(argv[1]), errno)!=0)
   {
     printf("usage %s channel\n", argv[0]);
     exit(1);
   }
+
+  g_channel = channel;
 
   struct sigaction sig;
   sig.sa_handler = signal_handler;

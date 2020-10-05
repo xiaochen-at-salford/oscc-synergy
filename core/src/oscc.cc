@@ -173,7 +173,7 @@ oscc_result_t oscc_publish_steering_torque(double torque)
   return result;
 }
 
-oscc_result_t oscc_subscribe_to_brake_reports(void(*callback)(oscc_brake_report_s *report))
+oscc_result_t oscc_subscribe_to_brake_reports(void(*callback)(oscc_brake_report_s* report))
 {
   oscc_result_t result = OSCC_ERROR;
   if (callback != NULL)
@@ -299,7 +299,7 @@ oscc_result_t oscc_disable_steering()
   steering_disable.magic[0] = static_cast<uint8_t>(OSCC_MAGIC_BYTE_0);
   steering_disable.magic[1] = static_cast<uint8_t>(OSCC_MAGIC_BYTE_1);
   result = oscc_can_write(OSCC_STEERING_DISABLE_CAN_ID, 
-                          (void *) &steering_disable, 
+                          (void*) &steering_disable, 
                           sizeof(steering_disable)      );
   return result;
 }

@@ -36,23 +36,26 @@
 #define THROTTLE_FILTER_FACTOR 0.2
 #define STEERING_FILTER_FACTOR 0.1
 
+extern int g_channel;
 static int commander_enabled = COMMANDER_DISABLED;
 static bool control_enabled = false;
 static double curr_angle;
 
-static oscc_result_t get_normalized_position(SDL_GameControllerAxis, double* const normalized_position);
+static oscc_result_t get_normalized_position(SDL_GameControllerAxis, 
+                                             double* const normalized_position);
 static oscc_result_t check_trigger_positions();
 static oscc_result_t commander_disable_controls();
 static oscc_result_t commander_enable_controls();
-static oscc_result_t get_button(SDL_GameControllerButton button, unsigned int* const state);
+static oscc_result_t get_button(SDL_GameControllerButton button, 
+                                unsigned int* const state       );
 static oscc_result_t command_brakes();
 static oscc_result_t command_throttle();
 static oscc_result_t command_steering();
 static void brake_callback(oscc_brake_report_s *report);
-static void throttle_callback(oscc_throttle_report_s *report);
-static void steering_callback(oscc_steering_report_s *report);
-static void fault_callback(oscc_fault_report_s *report);
-static void obd_callback(struct can_frame *frame);
+static void throttle_callback(oscc_throttle_report_s* report);
+static void steering_callback(oscc_steering_report_s* report);
+static void fault_callback(oscc_fault_report_s* report);
+static void obd_callback(struct can_frame* frame);
 static double calc_exponential_average(double average,
                                        double setpoint,
                                        double factor    );
@@ -63,7 +66,7 @@ oscc_result_t commander_init(int channel)
   if (commander_enabled == COMMANDER_DISABLED)
   {
     commander_enabled = COMMANDER_ENABLED;
-    return_code = oscc_open( channel );
+    return_code = oscc_open(channel);
     if (return_code != OSCC_ERROR)
     {
       // Register callback handlers
@@ -391,11 +394,23 @@ static void fault_callback(oscc_fault_report_s* report)
 // To cast specific OBD messages, you need to know the structure of the
 // data fields and the CAN_ID.
 static void obd_callback(struct can_frame* frame)
-{
-  if (frame->can_id == KIA_SOUL_OBD_STEERING_WHEEL_ANGLE_CAN_ID)
+{ 
+  if (g_channel == 1)
   {
-    kia_soul_obd_steering_wheel_angle_data_s* steering_data = (kia_soul_obd_steering_wheel_angle_data_s*)frame->data;
-    curr_angle = steering_data->steering_wheel_angle * KIA_SOUL_OBD_STEERING_ANGLE_SCALAR;
+    if (frame->can_id == KIA_SOUL_OBD_STEERING_WHEEL_ANGLE_CAN_ID)
+    {
+      kia_soul_obd_steering_wheel_angle_data_s* steering_data = (kia_soul_obd_steering_wheel_angle_data_s*)frame->data;     
+      curr_angle = steering_data->steering_wheel_angle*KIA_SOUL_OBD_STEERING_ANGLE_SCALAR;
+      printf ("Steering Angle: floats: %4.2f \n", curr_angle);
+    }
+    else if (frame->can_id == KIA_SOUL_OBD_BRAKE_PRESSURE_CAN_ID) 
+    {
+      double scale = 40.0;
+      uint16_t raw = ((frame->data[4] & 0x0F) << 8) | frame->data[3];
+      double brake_pressure;
+      brake_pressure = (double)raw/scale;
+      printf ("Brake Pressure: floats: %4.2f \n", brake_pressure);
+    }
   }
 }
 
