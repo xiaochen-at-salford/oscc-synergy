@@ -17,6 +17,11 @@ sudo ip link set can1 type can bitrate 500000
 sudo ip link set up can1
 ```
 
+Add access permission of the SDL2 joystick
+```bash
+sudo chmod ugo+rw /dev/input/event*
+``` 
+
 Start the joystick controller on can0
 ```bash
 bazel run //demo:niro_jscmd 0
