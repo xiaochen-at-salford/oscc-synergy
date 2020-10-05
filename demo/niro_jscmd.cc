@@ -55,7 +55,7 @@ int main(int argc, char** argv)
 
   struct sigaction sig;
   sig.sa_handler = signal_handler;
-  sigaction( SIGINT, &sig, NULL );
+  sigaction(SIGINT, &sig, NULL);
   ret = commander_init(channel);
 
   if (ret == OSCC_OK)
@@ -73,7 +73,7 @@ int main(int argc, char** argv)
       if (elapsed_time > COMMANDER_UPDATE_INTERVAL_MICRO)
       {
         update_timestamp = get_timestamp_micro();
-        ret = check_for_controller_update( );
+        ret = check_for_controller_update();
       }
 
       // Delay 1 ms to avoid loading the CPU

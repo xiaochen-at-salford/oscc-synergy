@@ -16,5 +16,7 @@ cc_binary(
     copts = COPTS + [
         "-Icore/include",
         "-Ijoy/include",
+        "-DKIA_NIRO",
+        "-DVEHICLE=kia_niro",
     ],
 )

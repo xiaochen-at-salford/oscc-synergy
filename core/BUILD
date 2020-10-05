@@ -20,5 +20,7 @@ cc_library(
         "-Icore/include",
         "-Icore/include/can_protocols",
         "-Icore/include/vehicles",
+        "-DKIA_NIRO",
+        "-DVEHICLE=kia_niro",
     ],
 )

@@ -360,7 +360,7 @@ void oscc_update_status(int sig, siginfo_t* siginfo, void* context)
       while (vehicle_can_bytes > 0)
       {
         if (obd_frame_callback != NULL)
-          obd_frame_callback( &rx_frame );
+          obd_frame_callback(&rx_frame);
 
         vehicle_can_bytes = read(global_vehicle_can_socket, &rx_frame, CAN_MTU);
       }
