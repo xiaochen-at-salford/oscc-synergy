@@ -4,14 +4,6 @@
  *
  */
 
-
-#ifndef _KIA_SOUL_PLATFORM_INFO_H_
-#define _KIA_SOUL_PLATFORM_INFO_H_
-
-
-#include <stdint.h>
-
-
 // ********************************************************************
 //
 // WARNING
@@ -25,6 +17,12 @@
 // It is NOT recommended to modify any of these values without expert knowledge.
 //
 // ************************************************************************
+
+#ifndef _KIA_SOUL_PLATFORM_INFO_H_
+#define _KIA_SOUL_PLATFORM_INFO_H_
+
+
+#include <stdint.h>
 
 
 // ****************************************************************************

@@ -1,12 +1,13 @@
 /**
  * @file joystick.h
  * @brief Joystick Interface.
- *
  */
 
+#ifndef _JOYSTICK_H_
+#define _JOYSTICK_H_
 
-#ifndef JOYSTICK_H
-#define JOYSTICK_H
+
+#include "oscc.h"
 
 /**
  * @brief Button state not pressed.
@@ -14,13 +15,10 @@
  */
 #define JOYSTICK_BUTTON_STATE_NOT_PRESSED ( 0 )
 
-
 /**
  * @brief Button state pressed.
- *
  */
 #define JOYSTICK_BUTTON_STATE_PRESSED ( 1 )
-
 
 /**
  * @brief Initialization function for the joystick
@@ -28,10 +26,8 @@
  * @return ERROR code
  * \li \ref NOERR (1) if success.
  * \li \ref ERROR (0) if failure.
- *
  */
-int joystick_init( );
-
+oscc_result_t joystick_init();
 
 /**
  * @brief Open joystick device.
@@ -41,19 +37,15 @@ int joystick_init( );
  * @return ERROR code:
  * \li \ref NOERR (1) if success.
  * \li \ref ERROR (0) if failure.
- *
  */
-int joystick_open( unsigned long device_index );
-
+oscc_result_t joystick_open(int device_index);
 
 /**
  * @brief Close joystick device.
  *
  * @return void
- *
  */
-void joystick_close( );
-
+void joystick_close();
 
 /**
  * @brief Update joystick device.
@@ -61,10 +53,8 @@ void joystick_close( );
  * @return ERROR code:
  * \li \ref NOERR (1) if success.
  * \li \ref ERROR (0) if failure.
- *
  */
-int joystick_update( );
-
+oscc_result_t joystick_update( );
 
 /**
  * @brief Get joystick axis value.
@@ -75,10 +65,8 @@ int joystick_update( );
  * @return ERROR code:
  * \li \ref NOERR (1) if success.
  * \li \ref ERROR (0) if failure.
- *
  */
-int joystick_get_axis( const unsigned long axis_index, int * const position );
-
+oscc_result_t joystick_get_axis(SDL_GameControllerAxis axis_index, int* const position);
 
 /**
  * @brief Get joystick button state.
@@ -89,9 +77,8 @@ int joystick_get_axis( const unsigned long axis_index, int * const position );
  * @return ERROR code:
  * \li \ref NOERR (1) if success.
  * \li \ref ERROR (0) if failure.
- *
  */
-int joystick_get_button( const unsigned long button_index,
-                         unsigned int * const state );
+oscc_result_t joystick_get_button(SDL_GameControllerButton button_index, unsigned int* const state);
 
-#endif /* JOYSTICK_H */
+
+#endif // _JOYSTICK_H_
