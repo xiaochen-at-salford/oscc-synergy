@@ -72,10 +72,10 @@ static oscc_result_t joystick_init_subsystem()
 
 static oscc_result_t joystick_get_guid_at_index(int device_index)
 {
-  oscc_result_t ret = OSCC_ERROR;
+  oscc_result_t result = OSCC_ERROR;
   if (joystick != NULL)
   {
-    ret = OSCC_OK;
+    result = OSCC_OK;
     const SDL_JoystickGUID m_guid = SDL_JoystickGetDeviceGUID(device_index);
     memcpy(joystick_guid.data, m_guid.data, sizeof(m_guid.data));
     memset(joystick_guid.ascii_string, 0,
@@ -84,10 +84,10 @@ static oscc_result_t joystick_get_guid_at_index(int device_index)
                               joystick_guid.ascii_string,
                               sizeof(joystick_guid.ascii_string) );
   }
-  return ret;
+  return result;
 }
 
-static int joystick_get_num_devices( )
+static int joystick_get_num_devices()
 {
   int num_joysticks = OSCC_ERROR;
   if (joystick != NULL)
@@ -102,11 +102,11 @@ static int joystick_get_num_devices( )
   return  num_joysticks;
 }
 
-oscc_result_t joystick_init( )
+oscc_result_t joystick_init()
 {
-  oscc_result_t ret = OSCC_OK;
-  ret = joystick_init_subsystem();
-  if (ret == OSCC_ERROR)
+  oscc_result_t result = OSCC_OK;
+  result = joystick_init_subsystem();
+  if (result == OSCC_ERROR)
     printf("init subsystem error\n");
   else
   {
@@ -116,25 +116,25 @@ oscc_result_t joystick_init( )
     if (num_joysticks > 0)
     {
       unsigned long device_index = 0;
-      ret = joystick_get_guid_at_index(device_index);
-      if (ret == OSCC_OK)
+      result = joystick_get_guid_at_index(device_index);
+      if (result == OSCC_OK)
       {
         printf("Found %d devices -- connecting to device at system index %lu - GUID: %s\n",
                num_joysticks,
                device_index,
                joystick_guid.ascii_string                                                   );
-        ret = joystick_open( device_index );
+        result = joystick_open(device_index);
       }
     }
     else
       printf( "No joystick/devices available on the host\n" );
   }
-  return ret;
+  return result;
 }
 
 oscc_result_t joystick_open(int device_index)
 {
-  oscc_result_t ret = OSCC_ERROR;
+  oscc_result_t result = OSCC_ERROR;
   if (joystick != NULL)
   {
     joystick->controller = SDL_GameControllerOpen(device_index);
@@ -143,92 +143,83 @@ oscc_result_t joystick_open(int device_index)
       printf("OSCC_ERROR: SDL_JoystickOpen - %s\n", SDL_GetError());
     else
     {
-      ret = OSCC_OK;
+      result = OSCC_OK;
       const SDL_JoystickGUID m_guid = SDL_JoystickGetGUID(SDL_GameControllerGetJoystick(joystick->controller));
-
       memcpy(joystick_guid.data, m_guid.data, sizeof( m_guid.data));
-
       memset(joystick_guid.ascii_string, 0,
              sizeof(joystick_guid.ascii_string) );
-
       SDL_JoystickGetGUIDString(m_guid,
                                 joystick_guid.ascii_string,
                                 sizeof(joystick_guid.ascii_string) );
-
       joystick->haptic = SDL_HapticOpenFromJoystick(SDL_GameControllerGetJoystick(joystick->controller));
-
       if (SDL_HapticRumbleInit(joystick->haptic) != 0)
         SDL_HapticClose( joystick->haptic );
     }
   }
-  return ret;
+  return result;
 }
 
-void joystick_close( )
+void joystick_close()
 {
-    if ( joystick != NULL )
+  if (joystick != NULL)
+  {
+    if (joystick->controller != JOYSTICK_DEVICE_CONTROLLER_INVALID)
     {
-        if ( joystick->controller != JOYSTICK_DEVICE_CONTROLLER_INVALID )
-        {
-            if ( SDL_GameControllerGetAttached( joystick->controller ) ==            SDL_TRUE )
-            {
-                if ( joystick->haptic )
-                {
-                    SDL_HapticClose( joystick->haptic );
-                }
-                SDL_GameControllerClose( joystick->controller );
-            }
-
-            joystick->controller = JOYSTICK_DEVICE_CONTROLLER_INVALID;
-        }
-        joystick = NULL;
+      if (SDL_GameControllerGetAttached(joystick->controller) == SDL_TRUE)
+      {
+        if (joystick->haptic)
+          SDL_HapticClose(joystick->haptic);
+        SDL_GameControllerClose(joystick->controller);
+      }
+      joystick->controller = JOYSTICK_DEVICE_CONTROLLER_INVALID;
     }
-    // Release the joystick subsystem
-    SDL_Quit();
+    joystick = NULL;
+  }
+  // Release the joystick subsystem
+  SDL_Quit();
 }
 
 oscc_result_t joystick_update()
 {
-  oscc_result_t ret = OSCC_ERROR;
+  oscc_result_t result = OSCC_ERROR;
   if (joystick != NULL)
   {
-    if ( joystick->controller != JOYSTICK_DEVICE_CONTROLLER_INVALID )
+    if (joystick->controller != JOYSTICK_DEVICE_CONTROLLER_INVALID)
     {
       SDL_GameControllerUpdate();
       if (SDL_GameControllerGetAttached(joystick->controller) == SDL_FALSE)
         printf("SDL_GameControllerGetAttached - device not attached\n");
       else
-        ret = OSCC_OK;
+        result = OSCC_OK;
     }
   }
-  return ret;
+  return result;
 }
 
 oscc_result_t joystick_get_axis(SDL_GameControllerAxis axis_index, int* const position)
 {
-  oscc_result_t ret = OSCC_ERROR;
+  oscc_result_t result = OSCC_ERROR;
   if (joystick!=NULL && position!=NULL)
   {
-    ret = OSCC_OK;
+    result = OSCC_OK;
     const Sint16 pos = SDL_GameControllerGetAxis(joystick->controller,
                                                  axis_index           );
     *position = (int)pos;
   }
-  return ret;
+  return result;
 }
 
 oscc_result_t joystick_get_button(SDL_GameControllerButton button_index, unsigned int* const button_state)
 {
-  oscc_result_t ret = OSCC_ERROR;
+  oscc_result_t result = OSCC_ERROR;
   if (joystick!=NULL && button_state!=NULL)
   {
-    ret = OSCC_OK;
+    result = OSCC_OK;
     const Uint8 m_state = SDL_GameControllerGetButton(joystick->controller,
                                                       button_index          );
-
     if (m_state == 1)
     {
-      (*button_state) = JOYSTICK_BUTTON_STATE_PRESSED;
+      *button_state = JOYSTICK_BUTTON_STATE_PRESSED;
 
       if (joystick->haptic)
         SDL_HapticRumblePlay(joystick->haptic, 1.0f, 100);
@@ -238,6 +229,5 @@ oscc_result_t joystick_get_button(SDL_GameControllerButton button_index, unsigne
     else
       *button_state = JOYSTICK_BUTTON_STATE_NOT_PRESSED;
   }
-
-  return ret;
+  return result;
 }

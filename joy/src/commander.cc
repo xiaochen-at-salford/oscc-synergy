@@ -27,14 +27,14 @@
 #define JOYSTICK_AXIS_STEER (SDL_CONTROLLER_AXIS_LEFTX)
 #define JOYSTICK_BUTTON_ENABLE_CONTROLS (SDL_CONTROLLER_BUTTON_START)
 #define JOYSTICK_BUTTON_DISABLE_CONTROLS (SDL_CONTROLLER_BUTTON_BACK)
-#define STEERING_RANGE_PERCENTAGE (0.2)
-#define BRAKES_ENABLED_MIN (0.05)
-#define JOYSTICK_DELAY_INTERVAL (50000)
-#define COMMANDER_ENABLED ( 1 )
-#define COMMANDER_DISABLED ( 0 )
-#define BRAKE_FILTER_FACTOR (0.2)
-#define THROTTLE_FILTER_FACTOR (0.2)
-#define STEERING_FILTER_FACTOR (0.1)
+#define STEERING_RANGE_PERCENTAGE 0.2
+#define BRAKES_ENABLED_MIN 0.05
+#define JOYSTICK_DELAY_INTERVAL 50000
+#define COMMANDER_ENABLED 1 
+#define COMMANDER_DISABLED 0
+#define BRAKE_FILTER_FACTOR 0.2
+#define THROTTLE_FILTER_FACTOR 0.2
+#define STEERING_FILTER_FACTOR 0.1
 
 static int commander_enabled = COMMANDER_DISABLED;
 static bool control_enabled = false;
@@ -148,47 +148,35 @@ oscc_result_t check_for_controller_update()
   return return_code;
 }
 
-static oscc_result_t get_normalized_position(SDL_GameControllerAxis axis_index, double * const normalized_position)
+static oscc_result_t get_normalized_position(SDL_GameControllerAxis axis_index, double* const normalized_position)
 {
   oscc_result_t return_code = OSCC_ERROR;
   int axis_position = 0;
   static const float deadzone = 0.3;
   return_code = joystick_get_axis(axis_index, &axis_position);
 
-    if ( return_code == OSCC_OK )
+  if (return_code == OSCC_OK)
+  {
+    // this is between -1.0 and 1.0
+    double raw_normalized_position = ((double) axis_position / INT16_MAX);
+
+    if (axis_index == JOYSTICK_AXIS_STEER)
     {
-        // this is between -1.0 and 1.0
-        double raw_normalized_position = ((double) axis_position / INT16_MAX);
-
-        if ( axis_index == JOYSTICK_AXIS_STEER )
-        {
-            // if axis is in deadzone, do nothing
-            if ( fabs(raw_normalized_position) < deadzone)
-            {
-                ( *normalized_position ) = 0.0;
-            }
-            else
-            {
-                // normalize over non deadzone range
-                raw_normalized_position *= (fabs(raw_normalized_position) - deadzone) / (1.0 - deadzone);
-
-                ( *normalized_position ) = CONSTRAIN(
-                raw_normalized_position,
-                -1.0,
-                1.0);
-            }
-        }
-        else
-        {
-            ( *normalized_position ) = CONSTRAIN(
-            raw_normalized_position,
-            0.0,
-            1.0);
-        }
+      // if axis is in deadzone, do nothing
+      if (fabs(raw_normalized_position) < deadzone)
+        *normalized_position = 0.0;
+      else
+      {
+        // normalize over non deadzone range
+        raw_normalized_position *= (fabs(raw_normalized_position)-deadzone) / (1.0-deadzone);
+        *normalized_position = CONSTRAIN(raw_normalized_position, -1.0, 1.0);
+      }
     }
+    else
+      *normalized_position = CONSTRAIN(raw_normalized_position, 0.0, 1.0);
+  }
 
-    return return_code;
-
+  return return_code;
 }
 
 static oscc_result_t check_trigger_positions()
@@ -197,7 +185,7 @@ static oscc_result_t check_trigger_positions()
   return_code = joystick_update();
   double normalized_brake_position = 0;
   if (return_code == OSCC_OK)
-    return_code = get_normalized_position( JOYSTICK_AXIS_BRAKE, &normalized_brake_position );
+    return_code = get_normalized_position(JOYSTICK_AXIS_BRAKE, &normalized_brake_position);
 
   double normalized_throttle_position = 0;
 
@@ -215,7 +203,6 @@ static oscc_result_t check_trigger_positions()
 static oscc_result_t commander_disable_controls()
 {
   oscc_result_t return_code = OSCC_ERROR;
-
   if (commander_enabled==COMMANDER_ENABLED && control_enabled==true)
   {
     printf("Disable controls\n");
@@ -225,7 +212,6 @@ static oscc_result_t commander_disable_controls()
   }
   else
     return_code = OSCC_OK;
-
   return return_code;
 }
 
@@ -241,7 +227,6 @@ static oscc_result_t commander_enable_controls()
   }
   else
     return_code = OSCC_OK;
-
   return return_code;
 }
 
@@ -284,7 +269,7 @@ static oscc_result_t command_brakes()
     average = 0.0;
     return_code = OSCC_OK;
   }
-  return ( return_code );
+  return return_code;
 }
 
 // For the throttle command, we want to send a normalized position based on the
@@ -297,40 +282,32 @@ static oscc_result_t command_throttle()
   if (commander_enabled == COMMANDER_ENABLED && control_enabled == true)
   {
     double normalized_throttle_position = 0;
-
     return_code = get_normalized_position( JOYSTICK_AXIS_THROTTLE, &normalized_throttle_position );
-
-    if ( return_code == OSCC_OK && normalized_throttle_position >= 0.0 )
+    if (return_code==OSCC_OK && normalized_throttle_position>=0.0)
     {
-        double normalized_brake_position = 0;
+      double normalized_brake_position = 0;
 
-        // If braking, do not throttle
-        return_code = get_normalized_position( JOYSTICK_AXIS_BRAKE, &normalized_brake_position );
+      // If braking, do not throttle
+      return_code = get_normalized_position(JOYSTICK_AXIS_BRAKE, &normalized_brake_position);
 
-        if ( normalized_brake_position >= BRAKES_ENABLED_MIN )
-        {
-            normalized_throttle_position = 0.0;
-        }
+      if (normalized_brake_position >= BRAKES_ENABLED_MIN)
+        normalized_throttle_position = 0.0;
     }
 
-    if ( return_code == OSCC_OK && normalized_throttle_position >= 0.0 )
+    if (return_code==OSCC_OK && normalized_throttle_position>=0.0)
     {
-        average = calc_exponential_average(
-            average,
-            normalized_throttle_position,
-            THROTTLE_FILTER_FACTOR );
-
-        printf("Throttle: %f ", average);
-
-        return_code = oscc_publish_throttle_position( average );
+      average = calc_exponential_average(average, 
+                                         normalized_throttle_position, 
+                                         THROTTLE_FILTER_FACTOR        );
+      printf("Throttle: %f ", average);
+      return_code = oscc_publish_throttle_position( average );
     }
-}
-else
-{
-  average = 0.0;
-  return_code = OSCC_OK;
-}
-
+  }
+  else
+  {
+    average = 0.0;
+    return_code = OSCC_OK;
+  }
   return return_code;
 }
 
@@ -338,7 +315,7 @@ else
 // the game controller. Since the car will fault if it detects too much discontinuity
 // between spoofed output signals, we use an exponential average filter to smooth
 // our output.
-static oscc_result_t command_steering( )
+static oscc_result_t command_steering()
 {
   oscc_result_t return_code = OSCC_ERROR;
   static double average = 0.0;
@@ -366,7 +343,7 @@ static oscc_result_t command_steering( )
 }
 
 /*!
- * These callback functions just check the reports for operator overrides. The
+ * These callback functions below check the reports for operator overrides. The
  * firmware modules should have disabled themselves, but we will send the
  * command again just to be safe.
  *
