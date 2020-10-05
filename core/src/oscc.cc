@@ -330,13 +330,13 @@ void oscc_update_status(int sig, siginfo_t* siginfo, void* context)
           if (throttle_report_callback != NULL)
             throttle_report_callback(throttle_report);
         }
-        else if ( rx_frame.can_id == OSCC_BRAKE_REPORT_CAN_ID )
+        else if (rx_frame.can_id == OSCC_BRAKE_REPORT_CAN_ID)
         {
           oscc_brake_report_s *brake_report = (oscc_brake_report_s*) rx_frame.data;
           if (brake_report_callback != NULL)
             brake_report_callback(brake_report);
         }
-        else if ( rx_frame.can_id == OSCC_FAULT_REPORT_CAN_ID )
+        else if (rx_frame.can_id == OSCC_FAULT_REPORT_CAN_ID)
         {
           oscc_fault_report_s* fault_report = (oscc_fault_report_s*) rx_frame.data;
           if (fault_report_callback != NULL)
@@ -347,10 +347,10 @@ void oscc_update_status(int sig, siginfo_t* siginfo, void* context)
           if (obd_frame_callback!=NULL && global_vehicle_can_socket<0)
             obd_frame_callback(&rx_frame);
         }
-
-        // Read bytes of the next frame
-        oscc_can_bytes = read(global_oscc_can_socket, &rx_frame, CAN_MTU);
       }
+
+      // Read bytes of the next frame
+      oscc_can_bytes = read(global_oscc_can_socket, &rx_frame, CAN_MTU);
     }
 
     if (global_vehicle_can_socket >= 0)
