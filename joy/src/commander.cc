@@ -11,14 +11,14 @@
 #include <sys/time.h>
 #include <linux/can.h>
 
-#include "oscc.h"
-#include "vehicles.h"
-#include "can_protocols/brake_can_protocol.h"
-#include "can_protocols/steering_can_protocol.h"
-#include "can_protocols/throttle_can_protocol.h"
-#include "can_protocols/fault_can_protocol.h"
+#include "core/include/oscc.h"
+#include "core/include/vehicles.h"
+#include "core/include/can_protocols/brake_can_protocol.h"
+#include "core/include/can_protocols/steering_can_protocol.h"
+#include "core/include/can_protocols/throttle_can_protocol.h"
+#include "core/include/can_protocols/fault_can_protocol.h"
 
-#include "joystick.h"
+#include "joy/include/joystick.h"
 
 #define CONSTRAIN(amt, low, high) ((amt) < (low) ? (low) : ((amt) > (high) ? (high) : (amt)))
 

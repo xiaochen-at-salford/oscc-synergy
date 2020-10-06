@@ -15,7 +15,7 @@
 #include <unistd.h>
 #include <poll.h>
 
-#include "oscc.h"
+#include "core/include/oscc.h"
 #include "internal/oscc.h"
 
 #define UNUSED(x) (void)(x)

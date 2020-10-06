@@ -7,7 +7,7 @@
 #define _JOYSTICK_H_
 
 
-#include "oscc.h"
+#include "core/include/oscc.h"
 
 /**
  * @brief Button state not pressed.

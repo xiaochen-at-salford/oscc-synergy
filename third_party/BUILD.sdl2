@@ -6,7 +6,4 @@ cc_library(
    srcs = [
       "libSDL2.so",
    ],
-
-
-   visibility = ["//visibility:public"],
 )

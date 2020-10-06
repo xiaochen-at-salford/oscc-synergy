@@ -12,8 +12,8 @@
 #include <SDL2/SDL_joystick.h>
 #include <SDL2/SDL_gamecontroller.h>
 
-#include "oscc.h"
-#include "joystick.h"
+#include "core/include/oscc.h"
+#include "joy/include/joystick.h"
 
 /**
  * @brief Button press debounce delay. [microseconds]
