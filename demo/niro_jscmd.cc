@@ -14,8 +14,9 @@
 #define COMMANDER_UPDATE_INTERVAL_MICRO 50000
 #define SLEEP_TICK_INTERVAL_MICRO 1000
 
-int g_channel;
+extern int g_channel;
 static int error_thrown = OSCC_OK;
+extern double g_steering_angle;
 
 static unsigned long long get_timestamp_micro()
 {

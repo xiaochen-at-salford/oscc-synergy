@@ -36,10 +36,12 @@
 #define THROTTLE_FILTER_FACTOR 0.2
 #define STEERING_FILTER_FACTOR 0.1
 
-extern int g_channel;
 static int commander_enabled = COMMANDER_DISABLED;
 static bool control_enabled = false;
-static double curr_angle;
+static double curr_angle = 0.0;
+int g_channel = 1;
+double g_steering_angle = 0.0;
+double g_brake_pressure = 0.0;
 
 static oscc_result_t get_normalized_position(SDL_GameControllerAxis, 
                                              double* const normalized_position);
@@ -263,7 +265,7 @@ static oscc_result_t command_brakes()
       average = calc_exponential_average(average, 
                                           normalized_position, 
                                           BRAKE_FILTER_FACTOR  );
-      printf("Brake: %f ", average);
+      // printf("Brake: %f ", average);
       return_code = oscc_publish_brake_position( average );
     }
   }
@@ -302,7 +304,7 @@ static oscc_result_t command_throttle()
       average = calc_exponential_average(average, 
                                          normalized_throttle_position, 
                                          THROTTLE_FILTER_FACTOR        );
-      printf("Throttle: %f ", average);
+      // printf("Throttle: %f ", average);
       return_code = oscc_publish_throttle_position( average );
     }
   }
@@ -331,7 +333,7 @@ static oscc_result_t command_steering()
       average = calc_exponential_average(average, 
                                           normalized_position, 
                                           STEERING_FILTER_FACTOR );
-      printf("Steering: %f\n", average);
+      // printf("Steering: %f\n", average);
 
       // use only 20% of allowable range for controllability
       return_code = oscc_publish_steering_torque( average * STEERING_RANGE_PERCENTAGE );
@@ -394,23 +396,22 @@ static void fault_callback(oscc_fault_report_s* report)
 // To cast specific OBD messages, you need to know the structure of the
 // data fields and the CAN_ID.
 static void obd_callback(struct can_frame* frame)
-{ 
-  if (g_channel == 1)
+{
+  printf("obd frame: \n"); 
+  if (frame->can_id == KIA_SOUL_OBD_STEERING_WHEEL_ANGLE_CAN_ID)
   {
-    if (frame->can_id == KIA_SOUL_OBD_STEERING_WHEEL_ANGLE_CAN_ID)
-    {
-      kia_soul_obd_steering_wheel_angle_data_s* steering_data = (kia_soul_obd_steering_wheel_angle_data_s*)frame->data;     
-      curr_angle = steering_data->steering_wheel_angle*KIA_SOUL_OBD_STEERING_ANGLE_SCALAR;
-      printf ("Steering Angle: floats: %4.2f \n", curr_angle);
-    }
-    else if (frame->can_id == KIA_SOUL_OBD_BRAKE_PRESSURE_CAN_ID) 
-    {
-      double scale = 40.0;
-      uint16_t raw = ((frame->data[4] & 0x0F) << 8) | frame->data[3];
-      double brake_pressure;
-      brake_pressure = (double)raw/scale;
-      printf ("Brake Pressure: floats: %4.2f \n", brake_pressure);
-    }
+    kia_soul_obd_steering_wheel_angle_data_s* steering_data = (kia_soul_obd_steering_wheel_angle_data_s*)frame->data;     
+    curr_angle = steering_data->steering_wheel_angle*KIA_SOUL_OBD_STEERING_ANGLE_SCALAR;
+    g_steering_angle = curr_angle;
+    printf ("Steering Angle: floats: %4.2f \n", g_steering_angle);
+  }
+  else if (frame->can_id == KIA_SOUL_OBD_BRAKE_PRESSURE_CAN_ID) 
+  {
+    double scale = 40.0;
+    uint16_t raw = ((frame->data[4] & 0x0F) << 8) | frame->data[3];
+    // double brake_pressure;
+    g_brake_pressure = (double)raw/scale;
+    printf ("Brake Pressure: floats: %4.2f \n", g_brake_pressure);
   }
 }
 

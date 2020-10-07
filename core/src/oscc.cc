@@ -342,12 +342,10 @@ void oscc_update_status(int sig, siginfo_t* siginfo, void* context)
           if (fault_report_callback != NULL)
             fault_report_callback(fault_report);
         }
-        else
-        {
-          if (obd_frame_callback!=NULL && global_vehicle_can_socket<0)
-            obd_frame_callback(&rx_frame);
-        }
       }
+      else
+        if (obd_frame_callback!=NULL && global_vehicle_can_socket<0)
+          obd_frame_callback(&rx_frame);
 
       // Read bytes of the next frame
       oscc_can_bytes = read(global_oscc_can_socket, &rx_frame, CAN_MTU);
