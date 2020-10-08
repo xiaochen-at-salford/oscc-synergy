@@ -18,6 +18,13 @@
 
 
 /**
+ * @brief Global variables
+ */
+extern int g_channel;
+extern double g_steering_angle;
+extern double g_brake_pressure;
+
+/**
  * @brief MAX_CAN_IDS is the maximum number unique CAN IDs on the CAN bus used
  * for auto detection of CAN channels. Increasing this number increases the wait
  * time for checking if a channel contains expected CAN IDs, reducing this

@@ -39,7 +39,6 @@
 static int commander_enabled = COMMANDER_DISABLED;
 static bool control_enabled = false;
 static double curr_angle = 0.0;
-int g_channel = 1;
 double g_steering_angle = 0.0;
 double g_brake_pressure = 0.0;
 
@@ -397,13 +396,12 @@ static void fault_callback(oscc_fault_report_s* report)
 // data fields and the CAN_ID.
 static void obd_callback(struct can_frame* frame)
 {
-  printf("obd frame: \n"); 
   if (frame->can_id == KIA_SOUL_OBD_STEERING_WHEEL_ANGLE_CAN_ID)
   {
     kia_soul_obd_steering_wheel_angle_data_s* steering_data = (kia_soul_obd_steering_wheel_angle_data_s*)frame->data;     
     curr_angle = steering_data->steering_wheel_angle*KIA_SOUL_OBD_STEERING_ANGLE_SCALAR;
     g_steering_angle = curr_angle;
-    printf ("Steering Angle: floats: %4.2f \n", g_steering_angle);
+    printf ("Steering Angle: floats: %4.2f, ", g_steering_angle);
   }
   else if (frame->can_id == KIA_SOUL_OBD_BRAKE_PRESSURE_CAN_ID) 
   {
